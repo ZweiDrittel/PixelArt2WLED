@@ -16,6 +16,7 @@ interface SubmitButtonProps {
 
 const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
     const readColors = () => {
+    type myColor = number[];
     let originalcolors: string[] = [];
 
     for (var i = 0; i < props.rows; i++) {
@@ -25,9 +26,11 @@ const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
       }
     }
 
-    let colors: string[] = [];
+    let colors: myColor[] = [];
     originalcolors.forEach(color => {
-        colors.push(color.replace('rgb','').replace('(','[').replace(')',']').replace(' ','').replace(' ',''));
+        let values = color.replace('rgb','').replace('(','').replace(')','').replace(' ','').replace(' ','').split(",");
+        let numberColor: myColor = [parseInt(values[0]), parseInt(values[1]), parseInt(values[2])];
+        colors.push(numberColor);
     });
     
     return colors;
