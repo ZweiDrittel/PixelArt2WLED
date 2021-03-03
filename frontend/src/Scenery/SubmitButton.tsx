@@ -16,14 +16,19 @@ interface SubmitButtonProps {
 
 const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
     const readColors = () => {
-    let colors: string[] = [];
+    let originalcolors: string[] = [];
 
     for (var i = 0; i < props.rows; i++) {
       for (var j = 0; j < props.cols; j++) {
         const pixel = document.getElementById(`pixel-${i}-${j}`);
-        colors.push(pixel != null ? pixel.style.backgroundColor : "rgb(0,0,0)");
+        originalcolors.push(pixel != null ? pixel.style.backgroundColor : "rgb(0,0,0)");
       }
     }
+
+    let colors: string[] = [];
+    originalcolors.forEach(color => {
+        colors.push(color.replace('rgb','').replace('(','[').replace(')',']').replace(' ','').replace(' ',''));
+    });
     
     return colors;
   };
