@@ -51,7 +51,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
       xmlhttp.open("POST", url, true);
       var data = JSON.stringify({"on": true,
                   "seg": {
-                    "i": [0,[255,0,0]]}});
+                    "i": colors}});
       xmlhttp.send(data);
     };
 
