@@ -1,6 +1,7 @@
 import { createStyles, Grid, makeStyles, Paper, Theme } from '@material-ui/core';
-import React from 'react';
+import React, { useState } from 'react';
 import Pixel, { PixelProps } from './pixel';
+import ColorPicker from 'react-pick-color';
 
 interface CanvasProps {
     rows: Number;
@@ -9,9 +10,12 @@ interface CanvasProps {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    colorPicker: {
+      margin: '25px 50px',
+    },
+    flexdiv: {
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
     },
     item: {
       padding: 0,
@@ -21,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Canvas: React.FC<CanvasProps> = (props) => {
+    const [color, setColor] = useState('#fff');
     const classes = useStyles();
     var pixels: PixelProps[] = [{id: '0', color: '#fff'},
                                 {id: '1', color: '#fff'},
@@ -96,7 +101,10 @@ const Canvas: React.FC<CanvasProps> = (props) => {
         </React.Fragment>
       );
     }
-    return <Grid className={classes.root} container>
+
+    return <div className={classes.flexdiv}>
+            <ColorPicker  className={classes.colorPicker} color={color} onChange={(color) => setColor(color.hex)} />
+            <Grid container>
               <Grid container item>
                 <FormRow rowIndex={'0'} />
               </Grid>
@@ -146,6 +154,7 @@ const Canvas: React.FC<CanvasProps> = (props) => {
                 <FormRow rowIndex={'15'} />
               </Grid>
             </Grid>
+            </div>
   }
 
 export default Canvas;
