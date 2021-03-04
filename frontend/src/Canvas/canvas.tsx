@@ -1,4 +1,4 @@
-import { createStyles, Grid, makeStyles, Paper, Theme } from '@material-ui/core';
+import { Button, createStyles, Grid, makeStyles, Paper, Theme } from '@material-ui/core';
 import React, { useState } from 'react';
 import Pixel, { PixelProps } from './pixel';
 import ColorPicker from 'react-pick-color';
@@ -30,7 +30,7 @@ const Canvas: React.FC<CanvasProps> = (props) => {
     var pixels: PixelProps[] = [{id: '0', color: '#fff'},
                                 {id: '1', color: '#fff'},
                                 {id: '2', color: '#fff'},
-                                {id: '3', color: '#fff'},
+                                {id: '3', color: '#777'},
                                 {id: '4', color: '#fff'},
                                 {id: '5', color: '#fff'},
                                 {id: '6', color: '#fff'},

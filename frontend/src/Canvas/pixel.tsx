@@ -6,7 +6,6 @@ const useStyles = makeStyles(() =>
     pixel: {
       width: '20px',
       height: '20px',
-      backgroundColor: '#2F4',
     },
   }),
 );
