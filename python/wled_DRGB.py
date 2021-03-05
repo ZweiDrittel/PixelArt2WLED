@@ -10,10 +10,18 @@ from PIL import Image
 
 def readColors(img, x=16, y=16):
 	colors = []
-	for i in range(x):
-		for j in range(y):
+	for j in range(y):
+		start = 0
+		stop = x
+		step = 1
+		if j % 2 == 1:
+			start = x-1
+			stop = -1
+			step = -1
+
+		for i in range(start, stop, step):
 			rgb = list(img.getpixel((i,j)))
-			colors.append(rgb)
+			colors.append(rgb)	
 
 	return colors
 
@@ -25,17 +33,24 @@ def popen(ip, port, files=[]):
 	spidev.write("Start processing input from wled ... \n")
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
+	images = []
+	counter = 0
+	if len(files) > 0:
+		im = Image.open(files[counter])
+		rgb = im.convert('RGB')
+
+		images.append(readColors(rgb))
+		counter += 1
+
+	counter = 0
+
 	while True:
 		color = []
 		colorbyte = bytearray([2,1]) # DRGB Header
-		#print(colorbyte)
-		counter = 0
+		#set first byte to 255 to keep displaying after finished
 
-		if len(files) > 0:
-			im = Image.open(files[counter])
-			rgb = im.convert('RGB')
-
-			pixelArt = readColors(rgb)
+		if len(images) > 0:
+			pixelArt = images[counter]
 
 			for pixel in pixelArt:
 				red = float(pixel[0])
@@ -58,7 +73,9 @@ def popen(ip, port, files=[]):
 				intred = int(red)
 				intgreen = int(green)
 				intblue = int(blue)
-				colorbyte = colorbyte + bytearray([intred,intgreen,intblue]) 
+				colorbyte = colorbyte + bytearray([intred,intgreen,intblue])
+
+				print(f"pixel: {pixel} | {red}/{green}/{blue} | {intred}/{intgreen}/{intblue}")
 		
 			#spidev.write("Message: " + colorbyte + "\n")
 			sock.sendto(colorbyte, (ip, int(port)))			  
