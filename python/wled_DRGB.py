@@ -14,7 +14,7 @@ def readColors(img, x=16, y=16):
 		start = 0
 		stop = x
 		step = 1
-		if j % 2 == 1:
+		if j % 2 == 0:
 			start = x-1
 			stop = -1
 			step = -1
@@ -34,20 +34,18 @@ def popen(ip, port, files=[]):
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
 	images = []
-	counter = 0
-	if len(files) > 0:
-		im = Image.open(files[counter])
+	for i in range(len(files)):
+		im = Image.open(files[i])
 		rgb = im.convert('RGB')
 
 		images.append(readColors(rgb))
-		counter += 1
 
 	counter = 0
+	displayTime = 1
 
 	while True:
 		color = []
-		colorbyte = bytearray([2,1]) # DRGB Header
-		#set first byte to 255 to keep displaying after finished
+		colorbyte = bytearray([2,255]) # DRGB Header
 
 		if len(images) > 0:
 			pixelArt = images[counter]
@@ -74,17 +72,19 @@ def popen(ip, port, files=[]):
 				intgreen = int(green)
 				intblue = int(blue)
 				colorbyte = colorbyte + bytearray([intred,intgreen,intblue])
-
-				print(f"pixel: {pixel} | {red}/{green}/{blue} | {intred}/{intgreen}/{intblue}")
 		
 			#spidev.write("Message: " + colorbyte + "\n")
 			sock.sendto(colorbyte, (ip, int(port)))			  
 			#spidev.write("Message: " + data + "\n")
 			spidev.flush()
 
+			if len(files) == 1:
+				break
+
 			counter = counter + 1
 			if counter == len(files):
 				counter = 0
+			time.sleep(displayTime)
 		else:
 			i = 0
 			eingabe = sys.stdin.readline()
@@ -155,8 +155,9 @@ spidev.write("Executing for PORT: " + port + "\n")
 spidev.flush()
 
 #Wait 5 sec
-time.sleep(5)
+#time.sleep(5)
 
-filenames = ['C:/Users/veit/projects/PixelArt2WLED/images/spoderman.png']
+path = 'C:/Users/veit/projects/PixelArt2WLED/images/'
+filenames = [f"{path}susi.png", f"{path}veit.png"]
 #Call popen
 popen(ip, port, filenames)
