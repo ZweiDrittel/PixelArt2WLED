@@ -8,6 +8,12 @@ import math
 import socket
 from PIL import Image
 
+def loadLetters():
+	letters = {}
+	letters['a'] = []
+	f = open('../letters/a.txt', 'r')
+	return letters
+
 def readColors(img, x=16, y=16):
 	colors = []
 	for j in range(y):
@@ -25,7 +31,7 @@ def readColors(img, x=16, y=16):
 
 	return colors
 
-def popen(ip, port, files=[]):	
+def popen(ip, port, files=[], useKeyboard=False):	
 	url = '/json/state'
 	multired = float(1)#float(1200) # Multiplication, you can make the light brighter
 	multigreen = float(1)#float(1250) # Multiplication, you can make the light brighter
@@ -41,7 +47,7 @@ def popen(ip, port, files=[]):
 		images.append(readColors(rgb))
 
 	counter = 0
-	displayTime = 1
+	displayTime = 5
 
 	while True:
 		color = []
@@ -85,6 +91,25 @@ def popen(ip, port, files=[]):
 			if counter == len(files):
 				counter = 0
 			time.sleep(displayTime)
+		elif displayKeyboardInput:
+			key = input().lower()
+			print(key)
+			letters = loadLetters()
+
+			for pixel in letters[key]:
+				red = 0
+				green = 0
+				blue = 0
+				if pixel:
+					red = 150
+					green = 150
+					blue = 150
+				colorbyte = colorbyte + bytearray([red,green,blue])
+		
+			#spidev.write("Message: " + colorbyte + "\n")
+			sock.sendto(colorbyte, (ip, int(port)))	
+
+
 		else:
 			i = 0
 			eingabe = sys.stdin.readline()
@@ -154,10 +179,12 @@ spidev.write("Executing for IP: " + ip + "\n")
 spidev.write("Executing for PORT: " + port + "\n")
 spidev.flush()
 
+displayKeyboardInput = len(full_cmd_arguments) >= 2 and full_cmd_arguments[1] == 'keyboard'
+
 #Wait 5 sec
 #time.sleep(5)
 
 path = 'C:/Users/veit/projects/PixelArt2WLED/images/'
-filenames = [f"{path}susi.png", f"{path}veit.png"]
+filenames = [f"{path}smily.png", f"{path}Mario.png", f"{path}Pilz.png", f"{path}Stern.png", f"{path}Luigi.png", f"{path}Blume.png", f"{path}Pokeball.png", f"{path}Burger.png"]
 #Call popen
-popen(ip, port, filenames)
+popen(ip, port, filenames, displayKeyboardInput)
