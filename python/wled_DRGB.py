@@ -36,7 +36,7 @@ def popen(ip, port, files=[], useKeyboard=False):
 	multired = float(1)#float(1200) # Multiplication, you can make the light brighter
 	multigreen = float(1)#float(1250) # Multiplication, you can make the light brighter
 	multiblue = float(1)#float(850) # Multiplication, you can make the light brighter
-	spidev.write("Start processing input from wled ... \n")
+	#spidev.write("Start processing input from wled ... \n")
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
 	images = []
@@ -82,7 +82,7 @@ def popen(ip, port, files=[], useKeyboard=False):
 			#spidev.write("Message: " + colorbyte + "\n")
 			sock.sendto(colorbyte, (ip, int(port)))			  
 			#spidev.write("Message: " + data + "\n")
-			spidev.flush()
+			#spidev.flush()
 
 			if len(files) == 1:
 				break
@@ -151,7 +151,7 @@ def popen(ip, port, files=[], useKeyboard=False):
 				#spidev.write("Message: " + colorbyte + "\n")
 				sock.sendto(colorbyte, (ip, int(port)))			  
 				#spidev.write("Message: " + data + "\n")
-				spidev.flush()			  
+				#spidev.flush()			  
 
 			else:
 				break
@@ -165,26 +165,26 @@ ip = '192.168.178.100'#sys.argv[1]
 port = '21324'#sys.argv[2]
 
 #Calc filename 
-filename = 'C:/Users/veit/projects/wled_logs/' + ip + '.log'
+#filename = './logs/' + ip + '.log'
 
 #Open logfile
-spidev = open(filename, "w")
+#spidev = open(filename, "w")
 #spidev = file(file, "wb")
-spidev.write("Starting ...\n")
-spidev.flush()
+#spidev.write("Starting ...\n")
+#spidev.flush()
 
 #Log arguments
-spidev.write("Commandline call: " + str(full_cmd_arguments) + "\n")
-spidev.write("Executing for IP: " + ip + "\n")
-spidev.write("Executing for PORT: " + port + "\n")
-spidev.flush()
+#spidev.write("Commandline call: " + str(full_cmd_arguments) + "\n")
+#spidev.write("Executing for IP: " + ip + "\n")
+#spidev.write("Executing for PORT: " + port + "\n")
+#spidev.flush()
 
 displayKeyboardInput = len(full_cmd_arguments) >= 2 and full_cmd_arguments[1] == 'keyboard'
 
 #Wait 5 sec
 #time.sleep(5)
 
-path = 'C:/Users/veit/projects/PixelArt2WLED/images/'
-filenames = [f"{path}smily.png", f"{path}Mario.png", f"{path}Pilz.png", f"{path}Stern.png", f"{path}Luigi.png", f"{path}Blume.png", f"{path}Pokeball.png", f"{path}Burger.png"]
+path = 'images/'
+filenames = [f"{path}Smily.png", f"{path}Mario.png", f"{path}Pilz.png", f"{path}Stern.png", f"{path}Luigi.png", f"{path}Blume.png", f"{path}Pokeball.png", f"{path}Burger.png"]
 #Call popen
 popen(ip, port, filenames, displayKeyboardInput)

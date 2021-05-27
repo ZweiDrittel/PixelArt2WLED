@@ -3,11 +3,12 @@ FROM python:3.8
 
 WORKDIR /wledpixel
 
-COPY requirements.txt .
+COPY /python/requirements.txt .
 
 # install dependecies
 RUN pip3 install -r requirements.txt
 
-COPY wled_DRGB.py .
+COPY /python/wled_DRGB.py .
+COPY /images ./images
 
 CMD [ "python3", "./wled_DRGB.py" ] 
