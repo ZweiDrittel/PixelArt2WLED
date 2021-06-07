@@ -7,6 +7,7 @@ import json
 import math
 import socket
 from PIL import Image
+from tetris.tetris import Tetris
 
 def loadLetters():
 	letters = {}
@@ -155,6 +156,32 @@ def popen(ip, port, files=[], useKeyboard=False):
 
 			else:
 				break
+
+def playTetris(ip, port):
+	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
+
+	counter = 0
+	displayTime = 0.2
+
+	tetris = Tetris(dim=16)
+	tetris.getNextPiece()
+
+	while True:
+		colorbyte = bytearray([2,255])
+		lineIndex = 0
+		for line in tetris.field:
+			if(lineIndex % 2 == 1):
+				for color in line:
+					colorbyte += color
+			else:
+				for color in reversed(line):
+					colorbyte += color
+			lineIndex += 1
+
+		sock.sendto(colorbyte, (ip, int(port)))
+
+		tetris.timeStep()
+		time.sleep(displayTime)
 			
 #Get full command-line arguments
 full_cmd_arguments = sys.argv
@@ -181,10 +208,15 @@ port = '21324'#sys.argv[2]
 
 displayKeyboardInput = len(full_cmd_arguments) >= 2 and full_cmd_arguments[1] == 'keyboard'
 
+tetris = len(full_cmd_arguments) >= 2 and full_cmd_arguments[1] == 'tetris'
+
 #Wait 5 sec
 #time.sleep(5)
 
 path = 'images/'
 filenames = [f"{path}Smily.png", f"{path}Mario.png", f"{path}Pilz.png", f"{path}Stern.png", f"{path}Luigi.png", f"{path}Blume.png", f"{path}Pokeball.png", f"{path}Burger.png"]
 #Call popen
-popen(ip, port, filenames, displayKeyboardInput)
+if tetris:
+	playTetris(ip, port)
+else:
+	popen(ip, port, filenames, displayKeyboardInput)
