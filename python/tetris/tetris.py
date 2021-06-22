@@ -63,15 +63,25 @@ class Tetris:
                     print(f"colored {self.currentPiecePosition[0] + i} / {self.currentPiecePosition[1] + j}")
         self.currentPiecePosition[0] += 1
 
-    def blinkCurrentPiece(self, times=4):
+    def getCoordiantesOfCurrentPiece(self):
         pass
+
+    def blinkCurrentPiece(self, times=4, speed=2):
+        coordinates = getCoordiantesOfCurrentPiece()
+        for _ in range(times):
+            for coordinate in coordinates:
+                self.field[coordinate[0]][coordinate[1]] = backgroundColor
+            time.sleep(1/speed)
+            for coordinate in coordinates:
+                self.field[coordinate[0]][coordinate[1]] = self.currentColor
+            time.sleep(1/speed)
 
     def blinkLines(self, lines, times=4, speed=2):
         blankLine = [backgroundColor for x in range(self.dim)]
         coloredLines = []
         for line in lines:
             coloredLines.append(self.field(line))
-        for t in range(times):
+        for _ in range(times):
             for line in lines:
                 self.field[line] = blankLine
             time.sleep(1/speed)
