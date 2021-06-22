@@ -161,7 +161,7 @@ def playTetris(ip, port):
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
 	counter = 0
-	displayTime = 0.2
+	displayTime = 0.5
 
 	tetris = Tetris(dim=16)
 	tetris.getNextPiece()

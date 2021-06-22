@@ -12,9 +12,17 @@ class Tetris:
         self.currentShape = {}
         self.currentColor = backgroundColor
         self.currentPiecePosition = [0, 0]
+        self.blinkPixels = []
+        self.blinkState = 1
+        self.blinkSequencesLeft = 0
 
     def timeStep(self):
         print("step")
+        if(len(self.blinkPixels) > 0):
+            self.makeBlinkStep()
+            if len(self.blinkPixels) == 0:
+                self.resetDisplay()
+            return
         if(self.currentShape == None):
             self.getNextPiece()
             if(self.checkPieceLanded()):
@@ -27,7 +35,7 @@ class Tetris:
                 
                 if(self.isPieceAtTopOfDisplay()):
                     self.blinkAllLines()
-                    self.clearDisplay()
+                    self.resetDisplay()
 
                 self.currentShape = None
         else:
@@ -43,6 +51,17 @@ class Tetris:
         #check to move sideways
 
         #check to turn piece
+
+    def makeBlinkStep(self):
+        if self.blinkState == 1:
+            self.turnBlinkPixelsOff()
+            self.blinkState = 0
+        else:
+            self.turnBlinkPixelsOn()
+            self.blinkState = 1
+            self.blinkSequencesLeft -= 1
+            if self.blinkSequencesLeft == 0:
+                self.blinkPixels = []
 
     def turnPiece(self):
         pass
@@ -81,22 +100,26 @@ class Tetris:
                 self.field[coordinate[0]][coordinate[1]] = self.currentColor
             time.sleep(1/speed)
 
-    def blinkLines(self, lines, times=4, speed=2):
-        blankLine = [backgroundColor for x in range(self.dim)]
-        coloredLines = []
+    def blinkLines(self, lines, times=4):
         for line in lines:
-            coloredLines.append(self.field(line))
-        for _ in range(times):
-            for line in lines:
-                self.field[line] = blankLine
-            time.sleep(1/speed)
-            for line in lines:
-                self.field[line] = coloredLines[line]
-            time.sleep(1/speed)
+            for index, pixel in enumerate(self.field[line]):
+                self.addBlinkPixel(line, index, pixel)
+        self.blinkSequencesLeft = times
+        self.blinkState = 1
+            
+    def addBlinkPixel(self, i, j, color):
+        self.blinkPixels.append([i, j, color])
 
     def blinkAllLines(self):
-        lines = [i for i in range(len(self.field))]
-        blink(lines)
+        self.blinkLines(range(len(self.field)))
+
+    def turnBlinkPixelsOn(self):
+        for pixel in self.blinkPixels:
+            self.field[pixel[0]][pixel[1]] = pixel[2]
+
+    def turnBlinkPixelsOff(self):
+        for pixel in self.blinkPixels:
+            self.field[pixel[0]][pixel[1]] = backgroundColor
 
     def checkPieceLanded(self):
         if(self.currentPiecePosition[0] + len(self.currentShape) - 1 >= 15):
@@ -110,12 +133,12 @@ class Tetris:
     def getFullLines(self):
         fullLines = []
         for num, line in enumerate(self.field):
-            emptyField = false
+            emptyField = False
             for point in line:
                 if (point == backgroundColor):
                     emptyField = True
                     break
-            if (emptyField == false):
+            if (emptyField == False):
                 fullLines.append(num)
         return fullLines
 
