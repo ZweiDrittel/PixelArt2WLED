@@ -1,6 +1,7 @@
 from .colors import colors, backgroundColor
 from .shapes import shapes
 import random
+import time
 
 class Tetris:
 
@@ -18,10 +19,16 @@ class Tetris:
             self.getNextPiece()
             if(self.checkPieceLanded()):
                 print("landed")
+
                 lines = self.getFullLines()
                 if(len(lines) > 0):
                     self.blinkLines(lines)
                     self.removeLines(lines)
+                
+                if(self.isPieceAtTopOfDisplay()):
+                    self.blinkAllLines()
+                    self.clearDisplay()
+
                 self.currentShape = None
         else:
             self.lowerPiece(1)
@@ -59,8 +66,22 @@ class Tetris:
     def blinkCurrentPiece(self, times=4):
         pass
 
-    def blinkLines(self, lines, times=4):
-        pass
+    def blinkLines(self, lines, times=4, speed=2):
+        blankLine = [backgroundColor for x in range(self.dim)]
+        coloredLines = []
+        for line in lines:
+            coloredLines.append(self.field(line))
+        for t in range(times):
+            for line in lines:
+                self.field[line] = blankLine
+            time.sleep(1/speed)
+            for line in lines:
+                self.field[line] = coloredLines[line]
+            time.sleep(1/speed)
+
+    def blinkAllLines(self):
+        lines = [i for i in range(len(self.field))]
+        blink(lines)
 
     def checkPieceLanded(self):
         if(self.currentPiecePosition[0] + len(self.currentShape) - 1 >= 15):
@@ -80,6 +101,9 @@ class Tetris:
     def removeLines(self, lines):
         pass
 
+    def isPieceAtTopOfDisplay(self):
+        return self.currentPiecePosition[0] == 0
+
     def getNextPiece(self):
         index = random.randint(0, len(colors)-1)
         self.currentShape = shapes[index]
@@ -97,6 +121,11 @@ class Tetris:
                 if (self.currentShape[i][j] == 1):
                     self.field[self.currentPiecePosition[0] + i][self.currentPiecePosition[1] + j] = self.currentColor
                     print(f"colored {self.currentPiecePosition[0] + i} / {self.currentPiecePosition[1] + j}")
+
+    def resetDisplay(self):
+        for i in range(len(self.field)):
+            for j in range(len(self.field[i])):
+                self.field[i][j] = backgroundColor
 
     def render(self):
         pass
