@@ -107,11 +107,17 @@ class Tetris:
                     return True
         return False
 
-    def checkReachedTop(self):
-        pass
-
     def getFullLines(self):
-        return []
+        fullLines = []
+        for num, line in enumerate(self.field):
+            emptyField = false
+            for point in line:
+                if (point == backgroundColor):
+                    emptyField = True
+                    break
+            if (emptyField == false):
+                fullLines.append(num)
+        return fullLines
 
     def removeLines(self, lines):
         pass
@@ -125,9 +131,6 @@ class Tetris:
         self.currentColor = colors[index]
         self.initialCurrentPiece()
         print("got piece")
-        if(self.checkReachedTop()):
-            self.blinkCurrentPiece()
-            # game over
 
     def initialCurrentPiece(self):
         self.currentPiecePosition = [0, random.randint(0, self.dim-len(self.currentShape[0]))]
