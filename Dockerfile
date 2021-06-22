@@ -9,6 +9,7 @@ COPY /python/requirements.txt .
 RUN pip3 install -r requirements.txt
 
 COPY /python/wled_DRGB.py .
+COPY /python/tetris/ ./tetris
 COPY /images ./images
 
-CMD [ "python3", "./wled_DRGB.py" ] 
+ENTRYPOINT [ "python3", "./wled_DRGB.py", "tetris" ] 
