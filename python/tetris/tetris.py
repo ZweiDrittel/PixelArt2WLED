@@ -120,7 +120,9 @@ class Tetris:
         return fullLines
 
     def removeLines(self, lines):
-        pass
+        for line in lines:
+            self.field.pop(line)
+            self.field.insert(0, [backgroundColor for x in range(dim)])
 
     def isPieceAtTopOfDisplay(self):
         return self.currentPiecePosition[0] == 0
